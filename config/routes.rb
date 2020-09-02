@@ -14,7 +14,16 @@ Rails.application.routes.draw do
     
   end
   
-  resources :microposts, only: [:create, :destroy]
+  resources :microposts, only: [:index, :show, :new, :create] do
+    member do 
+      get :fav_microposts
+    end
+  end
+  
   resources :relationships, only: [:create, :destroy]
+  
+  resources :favorites, only: [:create, :destroy] 
+    
+  
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
