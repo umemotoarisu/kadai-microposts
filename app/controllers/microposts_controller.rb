@@ -1,6 +1,10 @@
 class MicropostsController < ApplicationController
    before_action :require_user_logged_in
    before_action :correct_user, only: [:destroy]
+
+  def index
+    @microposts = User.favorite.order.page(params[:id])
+  end
   
   def create
     @micropost = current_user.microposts.build(micropost_params)
@@ -13,12 +17,26 @@ class MicropostsController < ApplicationController
       render 'toppages/index'
     end
   end
+  
+  def show
+    @micropost = Micropost.find(params[:id])
+    @favorite = @user.favorites.order(id: :desc).page(params[:page])
+    counts(@user)
+  end
 
   def destroy
     @micropost.destroy
     flash[:success] = 'メッセージを削除しました。'
     redirect_back(fallback_location: root_path)
   end
+  
+  def likes
+    @micropost = current_user.favorites
+  end
+  
+  def favorite
+    @micropost = current_user.favorite.page(params[:id])
+  end 
   
   private
 
@@ -32,4 +50,6 @@ class MicropostsController < ApplicationController
       redirect_to root_url
     end
   end
+  
+  
 end
